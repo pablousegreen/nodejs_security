@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const verify = require("./verifyToken");
 const User = require("../model/User");
-const {registerValidation} = require('../validation');
+const {registerValidation, loginValidation} = require('../validation');
 const bcrypt = require('bcryptjs');
+
 
 router.get("/", verify, async (req, res) => {
   const us = await User.findOne({ _id: req.user._id });
@@ -50,5 +51,28 @@ router.post("/register", verify, async (req, res) => {
         res.status(400).send(err);
     }
   });
+
+  //refresh
+router.post("/refresh", async (req, res) => {
+    //Lets validate the data before we a user
+    console.log('Body is: ', req.body);
+    console.log('Name is: ', req.body.name);
+    const {error} = registerValidation(req.body);
+    if(error) return res.status(400).send({error: error.details[0].message});
+ 
+    //check the email exists
+   const user = await User.findOne({email: req.body.email});
+   if(!user){
+     return res.status(401).send({message: 'Email is not faound'});
+   }
+   
+   //Create and assing a token
+   //const token = jwt.sign({_id: user._id}, process.TOKEN_SECRET);
+   const token =jwt.sign({_id: user._id}, process.env.TOKEN_SECRET,  { expiresIn: '3m' }, function(err, token) {
+     if(err) console.log("400:-", err);
+     res.header('auth-token', token).send(token);
+   });
+});
+
 
 module.exports = router;
