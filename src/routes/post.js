@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const verify = require("./verifyToken");
-const User = require("../model/User");
-const {registerValidation, loginValidation} = require('../validation');
+const User = require("../../model/User");
+const {registerValidation, refreshValidation} = require('../validation');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
 router.get("/", verify, async (req, res) => {
@@ -57,7 +58,7 @@ router.post("/refresh", async (req, res) => {
     //Lets validate the data before we a user
     console.log('Body is: ', req.body);
     console.log('Name is: ', req.body.name);
-    const {error} = registerValidation(req.body);
+    const {error} = refreshValidation(req.body);
     if(error) return res.status(400).send({error: error.details[0].message});
  
     //check the email exists

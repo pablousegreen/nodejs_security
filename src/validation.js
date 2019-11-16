@@ -34,12 +34,13 @@ const loginValidation = (data) =>{
     return  schemaLogin.validate(data);
 };
 
-const renovateValidation = (user) =>{
-    const renovate = Joi.object({
+const refreshValidation = (user) =>{
+    const refresh = Joi.object({
         email: Joi.string().min(6).required().email()
     });
+    return refresh.validate(user);
 }
 
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
-module.exports.registerValidation = registerValidation;
+module.exports.refreshValidation = refreshValidation;

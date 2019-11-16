@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const passport = require('passport');
 //Import Routes
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/post');
@@ -14,6 +15,10 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true },
 
  //Middleware
  app.use(express.json());
+ app.use(passport.initialize());
+ app.use(passport.session());
+
+ require('./lib/passport');
 
 //Routes Middlewares
 app.use('/api/user', authRoute);
