@@ -2,7 +2,7 @@ const router = require("express").Router();
 const verify = require("./verifyToken");
 const User = require("../model/User");
 const {registerValidation, refreshValidation} = require('../validation');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
@@ -23,9 +23,7 @@ router.get("/", verify, async (req, res) => {
 //register
 router.post("/register", async (req, res) => {
     //Lets validate the data before we a user
-    console.log('Body is: ', req.body);
     const {error} = registerValidation(req.body);
-    console.log('error is: ', error);
     if(error) return res.status(400).send(error.details[0].message);
     //check the user exists
     const emailExists = await User.findOne({email: req.body.email});
@@ -56,8 +54,6 @@ router.post("/register", async (req, res) => {
   //refresh
 router.post("/refresh", async (req, res) => {
     //Lets validate the data before we a user
-    console.log('R Body is: ', req.body);
-    console.log('R Name is: ', req.body.name);
     const {error} = refreshValidation(req.body);
     if(error) return res.status(400).send({error: error.details[0].message});
  
@@ -76,8 +72,6 @@ router.post("/refresh", async (req, res) => {
 });
 
 router.delete("/delete", verify, async (req, resp)=>{
-  console.log('');
-  console.log('req.user.id: ',req.user._id);
 
   let {error} =  refreshValidation(req.body);
   if(error) return resp.status(402).send({message: error});
