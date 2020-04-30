@@ -52,7 +52,7 @@ router.post("/register", async (req, res) => {
   });
 
   //refresh
-router.post("/refresh", async (req, res) => {
+router.post("/refresh", verify, async (req, res) => {
     //Lets validate the data before we a user
     const {error} = refreshValidation(req.body);
     if(error) return res.status(400).send({error: error.details[0].message});
