@@ -27,29 +27,13 @@ router.post("/getToken", (req, res) => {
 });
 
 router.post("/cards", async (req, res) => {
-  const merchant_id_d = req.headers.merchant_id_d; //"mwfxtxcoom7dh47pcds1";
+  const merchant_id_d = req.headers.merchant_id_d;
   if(!merchant_id_d){
     console.log('Missing merchant_id_d ');
     res.status(401).json({message: 'merchant_id_d Forgotten'})
   }
   const url = `https://sandbox-api.openpay.mx/v1/${merchant_id_d}/cards`;
-  const body = req.body;/*{
-    "device_session_id": "kR1MiQhz2otdIuUlQkbEyitIqVMiI16f",
-    "holder_name": "Jon Doe",
-    "card_number": "4111111111111111",
-    "cvv2": "123",
-    "expiration_month": "12",
-    "expiration_year": "20",
-    "address": {
-      "line1": "Av 5 de Febrero",
-      "line2": "Roble 207",
-      "line3": "col carrillo",
-      "state": "Queretaro",
-      "city": "Querétaro",
-      "postal_code": "76900",
-      "country_code": "MX"
-    }
-  };*/
+  const body = req.body;
   if(!body){
     console.log('Missing body ');
     res.status(401).json({message: 'body Forgotten'})
@@ -70,7 +54,6 @@ router.post("/cards", async (req, res) => {
       return result.json();
     })
     .then(json => {
-      //console.log(`json: ${res.json()}`);
       console.log(json);
       console.log('------------');
       return res.status(200).json({message: json});
@@ -81,10 +64,20 @@ router.post("/cards", async (req, res) => {
 });
 
 
-router.post("/cardsbyid", async (req, res) => {
-  const cardId = 'kxtaatsqh0rktjdoft08';
-  const merchant_id_d = "mwfxtxcoom7dh47pcds1";
-  const url = `https://sandbox-api.openpay.mx/v1/${merchant_id_d}/cards/${cardId}`;
+router.get("/cardsbyid", async (req, res) => {
+  const card_id = req.headers.card_id;//'kxtaatsqh0rktjdoft08';
+  const merchant_id_d = req.headers.merchant_id_d;//"mwfxtxcoom7dh47pcds1";
+  const url = `https://sandbox-api.openpay.mx/v1/${merchant_id_d}/cards/${card_id}`;
+
+  if(!card_id){
+    console.log('Missing card_id ');
+    res.status(401).json({message: 'card_id Forgotten'})
+  }
+
+  if(!merchant_id_d){
+    console.log('Missing merchant_id_d ');
+    res.status(401).json({message: 'merchant_id_d Forgotten'})
+  }
 
   await fetch(url, {
         'method': 'GET',
