@@ -23,12 +23,15 @@ router.get("/", verify, async (req, res) => {
 //register
 router.post("/register", async (req, res) => {
     //Lets validate the data before we a user
+    console.log('Email: ', req.body.email);
     const {error} = registerValidation(req.body);
+    console.log('error is: ', error);
     if(error) return res.status(400).send(error.details[0].message);
     //check the user exists
     const emailExists = await User.findOne({email: req.body.email});
     if(emailExists){
-      return res.status(401).send('Email already exits');
+      console.log('emailExists: ', 'Email already exits');
+      return res.status(401).json({error: 'Email already exits'});
     }
   
     //hash password
@@ -45,9 +48,10 @@ router.post("/register", async (req, res) => {
     try{
       //save the new User
         const savedUser = await user.save();
-        res.status(200).send({user: savedUser._id});
+        console.log('savedUser: ', savedUser);
+        res.status(200).json({user: savedUser._id});
     }catch(err){
-        res.status(400).send(err);
+        res.status(400).json(err);
     }
   });
 

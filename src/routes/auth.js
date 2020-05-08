@@ -60,8 +60,12 @@ router.post("/login", async (req, res) => {
   //Create and assing a token
   //const token = jwt.sign({_id: user._id}, process.TOKEN_SECRET);
   const token =jwt.sign({_id: user._id}, process.env.TOKEN_SECRET,  { expiresIn: '3m' }, function(err, token) {
-    if(err) console.log("400:-", err);
-    res.header('auth-token', token).send(token);
+    if(err) {
+      console.log("400:-", err);
+      res.header('auth-token', token).send(err);
+    }else{
+      res.header('auth-token', token).send(token);
+    }
   });
   
   //res.status(200).send({message: 'Loged in'});
