@@ -42,6 +42,8 @@ router.post("/cards", async (req, res) => {
   const data = JSON.stringify(
     body
   );
+
+  console.log(data)
   await fetch(url, {
         'method': 'POST',
         'body':    data,
@@ -65,8 +67,8 @@ router.post("/cards", async (req, res) => {
 
 
 router.get("/cardsbyid", async (req, res) => {
-  const card_id = req.headers.card_id;//'kxtaatsqh0rktjdoft08';
-  const merchant_id_d = req.headers.merchant_id_d;//"mwfxtxcoom7dh47pcds1";
+  const card_id = req.headers.card_id;
+  const merchant_id_d = req.headers.merchant_id_d;
   const url = `https://sandbox-api.openpay.mx/v1/${merchant_id_d}/cards/${card_id}`;
 
   if(!card_id){
@@ -102,26 +104,48 @@ router.get("/cardsbyid", async (req, res) => {
 
 
 //https://sandbox-api.openpay.mx/v1/mwfxtxcoom7dh47pcds1/tokens
+//TOKENIZACION CARGO DIRECTO
 router.post("/tokens", async (req, res) => {
-  const merchant_id_d = "mwfxtxcoom7dh47pcds1";
+  const merchant_id_d = req.headers.merchant_id_d;
   const url = `https://sandbox-api.openpay.mx/v1/${merchant_id_d}/tokens`;
-  const body = {
-    "device_session_id" : "kR1MiQhz2otdIuUlQkbEyitIqVMiI16f",
-    "holder_name": "Tokenización cargo directo",
-    "card_number": "4242424242424242",
-    "cvv2": "842",
-    "expiration_month": "09",
-    "expiration_year": "29",
-    "address": {
-      "line1":"Av 5 de Febrero",
-      "line2":"Roble 207",
-      "line3":"col carrillo",
-      "state":"Queretaro",
-      "city":"Querétaro",
-      "postal_code":"76900",
-      "country_code":"MX"
-    }
-  };
+  const body = req.body;
+  const data = JSON.stringify(
+    body
+  );
+  await fetch(url, {
+        'method': 'POST',
+        'body':    data,
+        'headers': {
+          'Authorization': 'Basic ' + 'c2tfZDVhOTBhODNlZTc4NDgzODkwMjg2ZTJkZmI2MWRkMzU6',
+          'Content-Type': 'application/json'
+        }
+    })
+    .then(result => {
+      return result.json();
+    })
+    .then(json => {
+      console.log(json);
+      console.log('------------');
+      return res.status(200).json({message: json});
+    })
+    .catch(error =>{
+      return res.status(400).json({message: error});
+    });
+});
+
+
+router.post("/charges", async (req, res) => {
+  const merchant_id_d = req.headers.merchant_id_d;
+  if(!merchant_id_d){
+    console.log('Missing merchant_id_d ');
+    res.status(401).json({message: 'merchant_id_d Forgotten'})
+  }
+  const url = `https://sandbox-api.openpay.mx/v1/${merchant_id_d}/charges`;
+  const body = req.body;
+  if(!body){
+    console.log('Missing body ');
+    res.status(401).json({message: 'body Forgotten'})
+  }
 
   const data = JSON.stringify(
     body
@@ -138,7 +162,6 @@ router.post("/tokens", async (req, res) => {
       return result.json();
     })
     .then(json => {
-      //console.log(`json: ${res.json()}`);
       console.log(json);
       console.log('------------');
       return res.status(200).json({message: json});
